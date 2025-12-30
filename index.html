@@ -135,6 +135,7 @@
       </select>
     </div>
     <p id="status">正在連接後端...</p>
+    <button id="addSpotBtn">新增景點</button>
   </header>
 
   <div id="layout">
@@ -152,3 +153,21 @@
   <script src="app.js"></script>
 </body>
 </html>
+
+<div id="addSpotModal" style="
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.5); justify-content:center; align-items:center;
+">
+  <div style="background:white; padding:20px; width:300px; border-radius:8px;">
+    <h3>新增景點</h3>
+    <input id="spotName" placeholder="景點名稱" /><br/>
+    <input id="spotCity" placeholder="城市" /><br/>
+    <input id="spotCountry" placeholder="國家代碼（HK/JP/KR/TW）" /><br/>
+    <input id="spotLat" placeholder="緯度" /><br/>
+    <input id="spotLng" placeholder="經度" /><br/>
+    <input id="spotThumb" placeholder="圖片 URL" /><br/>
+    <textarea id="spotDesc" placeholder="描述"></textarea><br/>
+    <button id="submitSpot">提交</button>
+    <button onclick="closeModal()">取消</button>
+  </div>
+</div>

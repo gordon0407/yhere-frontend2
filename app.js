@@ -164,3 +164,35 @@ window.openDetails = async function (id) {
     form.reset();
   });
 };
+
+document.getElementById("addSpotBtn").addEventListener("click", () => {
+  document.getElementById("addSpotModal").style.display = "flex";
+});
+
+function closeModal() {
+  document.getElementById("addSpotModal").style.display = "none";
+}
+
+document.getElementById("submitSpot").addEventListener("click", async () => {
+  const name = document.getElementById("spotName").value;
+  const city = document.getElementById("spotCity").value;
+  const country = document.getElementById("spotCountry").value;
+  const lat = Number(document.getElementById("spotLat").value);
+  const lng = Number(document.getElementById("spotLng").value);
+  const thumbnail = document.getElementById("spotThumb").value;
+  const description = document.getElementById("spotDesc").value;
+
+  const res = await fetch("https://yhere-backend.onrender.com/spots", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, city, country, description, lat, lng, thumbnail })
+  });
+
+  const data = await res.json();
+
+  alert("新增成功！");
+  closeModal();
+
+  // 重新載入景點
+  loadSpots(country);
+});
