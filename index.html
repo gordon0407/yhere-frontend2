@@ -2,7 +2,11 @@
 <html lang="zh-HK">
 <head>
   <meta charset="UTF-8" />
-  <title>旅遊景點分享平台</title>
+  <title>Yhere 旅遊景點分享平台</title>
+
+  <!-- Web meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="探索香港、日本、韓國、台灣的精選旅遊景點，分享評價與旅遊攻略。" />
 
   <!-- Leaflet CSS -->
   <link
@@ -10,38 +14,345 @@
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
+  <!-- Google Font（可選） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 0;
-      padding: 0;
+    :root {
+      --bg: #050816;
+      --bg-elevated: #0b1020;
+      --bg-soft: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --accent-strong: #0ea5e9;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.25);
+      --danger: #f97373;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --blur: 18px;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部 Navbar */
     header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(var(--blur));
+      background: linear-gradient(
+        to right,
+        rgba(15, 23, 42, 0.92),
+        rgba(15, 23, 42, 0.75),
+        rgba(15, 23, 42, 0.92)
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
       padding: 10px 20px;
-      border-bottom: 1px solid #ddd;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
 
-    #status {
-      color: #555;
-      font-size: 14px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 16px;
+      border-right: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #0f172a 65%, #000);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ecfeff;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-text h1 span {
+      font-weight: 600;
+    }
+
+    .brand-sub {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .header-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-left,
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, #020617, #020617 40%, #030712);
+      padding: 6px 10px 6px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .pill-label {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e5e7eb;
     }
 
     #countrySelect {
-      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at top, #020617, #020617 60%, #030712);
+      color: var(--text-main);
+      padding: 6px 10px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      min-width: 120px;
+    }
+
+    #countrySelect:focus {
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+      border-color: var(--accent);
+    }
+
+    #status {
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f97373;
+      box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.25);
+    }
+
+    .status-dot.ok {
+      background: #4ade80;
+      box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.28);
+    }
+
+    #addSpotBtn {
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at top left, #38bdf8, #0ea5e9 55%, #0f172a);
+      color: white;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.45);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      white-space: nowrap;
+    }
+
+    #addSpotBtn span.icon {
       font-size: 14px;
     }
 
-    #layout {
-      display: flex;
-      height: calc(100vh - 60px);
+    #addSpotBtn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow: 0 16px 40px rgba(56, 189, 248, 0.55);
     }
 
+    #addSpotBtn:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 24px rgba(56, 189, 248, 0.4);
+    }
+
+    /* 主體 layout：左列表 + 右地圖 + 詳情 panel */
+    #layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) minmax(0, 1.8fr) minmax(260px, 360px);
+      gap: 16px;
+      padding: 16px;
+      height: calc(100vh - 64px);
+      box-sizing: border-box;
+    }
+
+    /* 左側：景點列表 placeholder（將來可以改成真正列表） */
+    #spotsListPanel {
+      background: radial-gradient(circle at top left, #020617, #020617 55%, #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 12px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .panel-sub {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    #spotsList {
+      margin-top: 6px;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .spot-card {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.93),
+        rgba(15, 23, 42, 0.9)
+      );
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+    }
+
+    .spot-card:hover {
+      border-color: rgba(56, 189, 248, 0.7);
+      background: radial-gradient(circle at top left, #020617, #020617 50%, #020617);
+      transform: translateY(-1px);
+    }
+
+    .spot-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+
+    .spot-meta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spot-meta-title {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spot-meta-city {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .spot-meta-desc {
+      font-size: 11px;
+      color: #6b7280;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spot-tag {
+      margin-top: 4px;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.2);
+      color: #a5f3fc;
+    }
+
+    /* 中間：地圖區 */
     #mapContainer {
-      flex: 2;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-soft);
+      background: #020617;
+      border: 1px solid rgba(30, 64, 175, 0.5);
     }
 
     #map {
@@ -49,56 +360,97 @@
       width: 100%;
     }
 
+    .map-overlay {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.94), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: min(320px, 80%);
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .map-overlay-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e5e7eb;
+    }
+
+    .map-overlay-accent {
+      color: var(--accent-strong);
+      font-weight: 500;
+    }
+
+    /* 右側：詳情 panel（沿用你原本的 detailsPanel） */
     #detailsPanel {
-      flex: 1;
-      border-left: 1px solid #ddd;
-      padding: 10px;
+      background: radial-gradient(circle at top left, #020617, #020617 55%, #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 14px 12px;
       overflow-y: auto;
+      font-size: 14px;
+      color: var(--text-main);
     }
 
     #detailsPanel.empty {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #888;
-      font-size: 14px;
+      color: var(--text-soft);
+      font-size: 13px;
+      text-align: center;
+      padding: 0 12px;
     }
 
     .spot-image {
       width: 100%;
-      border-radius: 8px;
+      border-radius: 14px;
       margin-bottom: 10px;
+      object-fit: cover;
+      max-height: 210px;
     }
 
     .spot-title {
       margin: 0;
-      font-size: 20px;
+      font-size: 18px;
+      letter-spacing: 0.02em;
     }
 
     .spot-city {
       margin: 4px 0 10px;
-      color: #666;
-      font-size: 14px;
+      color: var(--text-soft);
+      font-size: 13px;
     }
 
     .section-title {
-      margin-top: 15px;
-      margin-bottom: 5px;
-      font-weight: bold;
-      font-size: 15px;
+      margin-top: 14px;
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
     }
 
     .review-item {
-      border-bottom: 1px solid #eee;
-      padding: 5px 0;
-      font-size: 14px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 6px 0;
+      font-size: 13px;
     }
 
     .product-link {
       display: block;
       margin-bottom: 5px;
-      font-size: 14px;
-      color: #0066cc;
+      font-size: 13px;
+      color: var(--accent-strong);
       text-decoration: none;
     }
 
@@ -109,65 +461,330 @@
     #reviewForm input,
     #reviewForm textarea {
       width: 100%;
-      margin-bottom: 5px;
-      padding: 5px;
-      font-size: 14px;
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      font-size: 13px;
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      outline: none;
+    }
+
+    #reviewForm input:focus,
+    #reviewForm textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
     }
 
     #reviewForm button {
-      padding: 6px 10px;
-      font-size: 14px;
+      padding: 7px 12px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: none;
       cursor: pointer;
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+      color: #022c22;
+      font-weight: 500;
+      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.45);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+
+    #reviewForm button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow: 0 14px 34px rgba(34, 197, 94, 0.55);
+    }
+
+    /* 新增景點 modal */
+    #addSpotModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(14px);
+      z-index: 40;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-inner {
+      width: min(420px, 94%);
+      background: radial-gradient(circle at top left, #020617, #020617 55%, #020617);
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      padding: 16px 18px 14px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .modal-close {
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .modal-close:hover {
+      background: rgba(30, 64, 175, 0.5);
+      color: #e5e7eb;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .modal-grid textarea {
+      grid-column: 1 / -1;
+    }
+
+    .modal-input,
+    .modal-textarea {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 13px;
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .modal-input:focus,
+    .modal-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+
+    .modal-footer {
+      margin-top: 6px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      padding: 7px 14px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #ecfeff;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.55);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.04);
+    }
+
+    /* 手機版調整 */
+    @media (max-width: 960px) {
+      header {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .brand {
+        border-right: none;
+        padding-right: 0;
+      }
+
+      .header-main {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-right {
+        justify-content: flex-start;
+      }
+
+      #layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(200px, 0.9fr) minmax(260px, 1fr) minmax(280px, 1fr);
+        height: auto;
+      }
+
+      #spotsListPanel {
+        order: 3;
+        max-height: 260px;
+      }
+
+      #mapContainer {
+        order: 1;
+        height: 340px;
+      }
+
+      #detailsPanel {
+        order: 2;
+        max-height: 280px;
+      }
+
+      .map-overlay {
+        max-width: 92%;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Header / Navbar -->
   <header>
-    <h1>旅遊景點分享平台</h1>
-    <div>
-      <label for="countrySelect">選擇國家：</label>
-      <select id="countrySelect">
-        <option value="">請選擇</option>
-        <option value="HK">香港</option>
-        <option value="JP">日本</option>
-        <option value="KR">韓國</option>
-        <option value="TW">台灣</option>
-      </select>
+    <div class="brand">
+      <div class="brand-logo">Y</div>
+      <div class="brand-text">
+        <h1><span>Yhere</span> Explorer</h1>
+        <div class="brand-sub">發掘你下一站最靚景點</div>
+      </div>
     </div>
-    <p id="status">正在連接後端...</p>
-    <button id="addSpotBtn">新增景點</button>
+
+    <div class="header-main">
+      <div class="header-left">
+        <div class="pill">
+          <span class="pill-label">Destination</span>
+          <select id="countrySelect">
+            <option value="">選擇地區</option>
+            <option value="HK">香港</option>
+            <option value="JP">日本</option>
+            <option value="KR">韓國</option>
+            <option value="TW">台灣</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <p id="status">
+          <span class="status-dot"></span>
+          正在檢查後端連線…
+        </p>
+
+        <button id="addSpotBtn">
+          <span class="icon">＋</span>
+          新增景點
+        </button>
+      </div>
+    </div>
   </header>
 
+  <!-- Main layout -->
   <div id="layout">
-    <div id="mapContainer">
+    <!-- 左側：景點列表（暫時可以留空，之後如果你想，我可以幫你用 API 拉列表） -->
+    <aside id="spotsListPanel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">熱門景點</div>
+          <div class="panel-sub">選擇地區後會顯示精選景點</div>
+        </div>
+      </div>
+      <div id="spotsList">
+        <!-- 之後你可以用 JS 將 API 拉到這裡顯示 card -->
+        <div class="spot-card" style="opacity:0.6; pointer-events:none;">
+          <div class="spot-thumb" style="background-image:url('https://images.pexels.com/photos/3568300/pexels-photo-3568300.jpeg?auto=compress&cs=tinysrgb&w=800');"></div>
+          <div class="spot-meta">
+            <div class="spot-meta-title">太平山頂</div>
+            <div class="spot-meta-city">香港 · 景觀 · 夜景</div>
+            <div class="spot-meta-desc">示範卡片，選擇地區後會載入真實景點。</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 中間：地圖 -->
+    <section id="mapContainer">
       <div id="map"></div>
-    </div>
-    <div id="detailsPanel" class="empty">
+      <div class="map-overlay">
+        <div class="map-overlay-title">互動地圖</div>
+        <div>
+          在地圖上點選 <span class="map-overlay-accent">景點標記</span>，右側會顯示詳細介紹、用戶評價同推薦產品。
+        </div>
+      </div>
+    </section>
+
+    <!-- 右側：詳情 -->
+    <section id="detailsPanel" class="empty">
       請在地圖上選擇一個景點
+    </section>
+  </div>
+
+  <!-- 新增景點 Modal -->
+  <div id="addSpotModal">
+    <div class="modal-inner">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">新增景點</div>
+          <div class="modal-sub">分享你鍾意嘅地方，等更多人發現。</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+
+      <div class="modal-grid">
+        <input id="spotName" class="modal-input" placeholder="景點名稱" />
+        <input id="spotCity" class="modal-input" placeholder="城市（如：香港 / 東京）" />
+        <input id="spotCountry" class="modal-input" placeholder="國家代碼（HK / JP / KR / TW）" />
+        <input id="spotLat" class="modal-input" placeholder="緯度（例如：22.3193）" />
+        <input id="spotLng" class="modal-input" placeholder="經度（例如：114.1694）" />
+        <input id="spotThumb" class="modal-input" placeholder="圖片 URL（可用 Supabase 圖片連結）" />
+        <textarea id="spotDesc" class="modal-textarea" rows="3" placeholder="簡單介紹一下景點特色、氣氛、適合咩人去。"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal()">取消</button>
+        <button class="btn-primary" id="submitSpot">提交</button>
+      </div>
     </div>
   </div>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- 你的 app.js（沿用原本邏輯） -->
   <script src="app.js"></script>
+
+  <!-- 小 enhancement：啟動時修改 status Dot 顏色（可選） -->
+  <script>
+    // 讓 app.js 裡成功連線時可以改文字，這裡只負責初始樣式
+    function setStatusOk() {
+      const dot = document.querySelector(".status-dot");
+      if (dot) dot.classList.add("ok");
+    }
+  </script>
 </body>
 </html>
-
-<div id="addSpotModal" style="
-  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.5); justify-content:center; align-items:center;
-">
-  <div style="background:white; padding:20px; width:300px; border-radius:8px;">
-    <h3>新增景點</h3>
-    <input id="spotName" placeholder="景點名稱" /><br/>
-    <input id="spotCity" placeholder="城市" /><br/>
-    <input id="spotCountry" placeholder="國家代碼（HK/JP/KR/TW）" /><br/>
-    <input id="spotLat" placeholder="緯度" /><br/>
-    <input id="spotLng" placeholder="經度" /><br/>
-    <input id="spotThumb" placeholder="圖片 URL" /><br/>
-    <textarea id="spotDesc" placeholder="描述"></textarea><br/>
-    <button id="submitSpot">提交</button>
-    <button onclick="closeModal()">取消</button>
-  </div>
-</div>
