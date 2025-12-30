@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <title>旅遊景點分享平台</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #status {
+      color: #555;
+      font-size: 14px;
+    }
+
+    #countrySelect {
+      padding: 5px 8px;
+      font-size: 14px;
+    }
+
+    #layout {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    #mapContainer {
+      flex: 2;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    #detailsPanel {
+      flex: 1;
+      border-left: 1px solid #ddd;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    #detailsPanel.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 14px;
+    }
+
+    .spot-image {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .spot-title {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .spot-city {
+      margin: 4px 0 10px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .section-title {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .review-item {
+      border-bottom: 1px solid #eee;
+      padding: 5px 0;
+      font-size: 14px;
+    }
+
+    .product-link {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    .product-link:hover {
+      text-decoration: underline;
+    }
+
+    #reviewForm input,
+    #reviewForm textarea {
+      width: 100%;
+      margin-bottom: 5px;
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    #reviewForm button {
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>旅遊景點分享平台</h1>
+    <div>
+      <label for="countrySelect">選擇國家：</label>
+      <select id="countrySelect">
+        <option value="">請選擇</option>
+        <option value="HK">香港</option>
+        <option value="JP">日本</option>
+        <option value="KR">韓國</option>
+        <option value="TW">台灣</option>
+      </select>
+    </div>
+    <p id="status">正在連接後端...</p>
+  </header>
+
+  <div id="layout">
+    <div id="mapContainer">
+      <div id="map"></div>
+    </div>
+    <div id="detailsPanel" class="empty">
+      請在地圖上選擇一個景點
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
